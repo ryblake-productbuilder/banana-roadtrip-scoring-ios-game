@@ -4,13 +4,14 @@ struct PlayerCardView: View {
     let player: Player
     let emojiOptions: [String]
     let isLeading: Bool
+    let compactLayout: Bool
     let playerName: Binding<String>
     let onEmojiChange: (String) -> Void
     let onIncrement: () -> Void
     let onDecrement: () -> Void
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: compactLayout ? 8 : 14) {
             HStack {
                 Menu {
                     ForEach(emojiOptions, id: \.self) { emoji in
@@ -20,8 +21,8 @@ struct PlayerCardView: View {
                     }
                 } label: {
                     Text(player.emoji)
-                        .font(.system(size: 44))
-                        .frame(width: 72, height: 72)
+                        .font(.system(size: compactLayout ? 28 : 40))
+                        .frame(width: compactLayout ? 48 : 64, height: compactLayout ? 48 : 64)
                         .background(Color.yellow.opacity(0.25))
                         .clipShape(Circle())
                 }
@@ -30,8 +31,8 @@ struct PlayerCardView: View {
 
                 if isLeading {
                     Image(systemName: "crown.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .frame(width: 32, height: 32)
+                        .font(.system(size: compactLayout ? 14 : 16, weight: .semibold))
+                        .frame(width: compactLayout ? 26 : 32, height: compactLayout ? 26 : 32)
                         .background(Color.orange.opacity(0.18))
                         .foregroundStyle(Color.orange)
                         .clipShape(Circle())
@@ -39,32 +40,28 @@ struct PlayerCardView: View {
             }
 
             TextField("Roadtripper Name", text: playerName)
-            .textInputAutocapitalization(.words)
-            .autocorrectionDisabled()
-            .submitLabel(.done)
-            .multilineTextAlignment(.center)
-            .font(.headline)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(Color.yellow.opacity(0.12))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .textInputAutocapitalization(.words)
+                .autocorrectionDisabled()
+                .submitLabel(.done)
+                .multilineTextAlignment(.center)
+                .font(compactLayout ? .subheadline.weight(.semibold) : .headline)
+                .padding(.horizontal, compactLayout ? 8 : 10)
+                .padding(.vertical, compactLayout ? 6 : 8)
+                .background(Color.yellow.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
-            VStack(spacing: 6) {
+            VStack(spacing: compactLayout ? 0 : 2) {
                 Text("\(player.score)")
-                    .font(.system(size: 36, weight: .bold, design: .rounded))
-
-                Text(player.score == 1 ? "banana point" : "banana points")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: compactLayout ? 24 : 32, weight: .bold, design: .rounded))
             }
 
-            HStack(spacing: 14) {
+            HStack(spacing: compactLayout ? 8 : 10) {
                 Button(action: onDecrement) {
                     Label("Peel Slip", systemImage: "minus.circle.fill")
                         .labelStyle(.iconOnly)
-                        .font(.system(size: 28))
+                        .font(.system(size: compactLayout ? 20 : 24))
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, compactLayout ? 6 : 8)
                 }
                 .buttonStyle(.bordered)
                 .tint(.orange)
@@ -72,16 +69,16 @@ struct PlayerCardView: View {
                 Button(action: onIncrement) {
                     Label("Banana Win", systemImage: "plus.circle.fill")
                         .labelStyle(.iconOnly)
-                        .font(.system(size: 28))
+                        .font(.system(size: compactLayout ? 20 : 24))
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, compactLayout ? 6 : 8)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.yellow.opacity(0.9))
                 .foregroundStyle(.black)
             }
         }
-        .padding()
+        .padding(compactLayout ? 10 : 16)
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
@@ -91,6 +88,6 @@ struct PlayerCardView: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(isLeading ? Color.orange.opacity(0.65) : Color.yellow.opacity(0.35), lineWidth: isLeading ? 3 : 2)
         )
-        .shadow(color: Color.black.opacity(0.06), radius: 12, y: 6)
+        .shadow(color: Color.black.opacity(0.06), radius: compactLayout ? 8 : 12, y: compactLayout ? 4 : 6)
     }
 }
