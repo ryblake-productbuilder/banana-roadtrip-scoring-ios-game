@@ -5,6 +5,7 @@ struct ContentView: View {
     @State private var showingResetConfirmation = false
     @State private var showingFreshTripConfirmation = false
     @State private var showingSettings = false
+    @Environment(\.colorScheme) private var colorScheme
 
     private var usesCompactCards: Bool {
         viewModel.session.players.count >= 3
@@ -15,6 +16,38 @@ struct ContentView: View {
             GridItem(.flexible(), spacing: usesCompactCards ? 12 : 16),
             GridItem(.flexible(), spacing: usesCompactCards ? 12 : 16)
         ]
+    }
+
+    private var backgroundGradient: [Color] {
+        if colorScheme == .dark {
+            return [
+                Color(red: 0.18, green: 0.14, blue: 0.05),
+                Color(red: 0.32, green: 0.23, blue: 0.06)
+            ]
+        }
+
+        return [
+            Color(red: 1.0, green: 0.98, blue: 0.86),
+            Color(red: 1.0, green: 0.92, blue: 0.55)
+        ]
+    }
+
+    private var panelBackground: Color {
+        colorScheme == .dark
+            ? Color.white.opacity(0.08)
+            : Color.white.opacity(0.72)
+    }
+
+    private var fieldBackground: Color {
+        colorScheme == .dark
+            ? Color.white.opacity(0.12)
+            : Color.white.opacity(0.92)
+    }
+
+    private var accentTint: Color {
+        colorScheme == .dark
+            ? Color(red: 0.98, green: 0.82, blue: 0.33)
+            : .brown
     }
 
     var body: some View {
@@ -30,7 +63,7 @@ struct ContentView: View {
             }
             .background(
                 LinearGradient(
-                    colors: [Color(red: 1.0, green: 0.98, blue: 0.86), Color(red: 1.0, green: 0.92, blue: 0.55)],
+                    colors: backgroundGradient,
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -76,14 +109,16 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Road Trip:")
                 .font(.title3.weight(.bold))
+                .foregroundStyle(.primary)
 
             TextField("Banana Roadtrip Name", text: Binding(
                 get: { viewModel.session.name },
                 set: viewModel.updateSessionName
             ))
             .font(.title2.weight(.bold))
+            .foregroundStyle(.primary)
             .padding()
-            .background(Color.white.opacity(0.92))
+            .background(fieldBackground)
             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
     }
@@ -120,7 +155,7 @@ struct ContentView: View {
         } label: {
             Image(systemName: "ellipsis.circle.fill")
                 .font(.system(size: 22))
-                .foregroundStyle(.brown)
+                .foregroundStyle(accentTint)
         }
     }
 
@@ -137,7 +172,7 @@ struct ContentView: View {
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(.brown)
+                                .foregroundStyle(accentTint)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel("Add Player")
@@ -193,7 +228,7 @@ struct ContentView: View {
                 .disabled(viewModel.session.players.isEmpty)
             }
             .padding()
-            .background(Color.white.opacity(0.72))
+            .background(panelBackground)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
     }

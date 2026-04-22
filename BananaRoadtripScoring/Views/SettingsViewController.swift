@@ -21,7 +21,13 @@ final class SettingsViewController: UIViewController {
     private func configureView() {
         title = "Settings"
 
-        view.backgroundColor = UIColor(red: 1.0, green: 0.98, blue: 0.86, alpha: 1.0)
+        view.backgroundColor = UIColor { traits in
+            if traits.userInterfaceStyle == .dark {
+                return UIColor(red: 0.18, green: 0.14, blue: 0.05, alpha: 1.0)
+            }
+
+            return UIColor(red: 1.0, green: 0.98, blue: 0.86, alpha: 1.0)
+        }
 
         if var configuration = pointsButton.configuration {
             configuration.title = "\(draftSettings.pinkALiciousPoints)"
@@ -38,6 +44,10 @@ final class SettingsViewController: UIViewController {
 
         saveButton.layer.cornerRadius = 14
         cancelButton.layer.cornerRadius = 14
+        if var saveConfiguration = saveButton.configuration {
+            saveConfiguration.baseForegroundColor = .white
+            saveButton.configuration = saveConfiguration
+        }
 
         updatePrimaryButtonTitle()
     }
